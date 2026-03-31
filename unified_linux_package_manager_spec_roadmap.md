@@ -1,4 +1,4 @@
-# Unified Linux Package Manager (ULPM)
+# Unified Linux Package Manager (Resolve)
 
 ## 1. Problem Statement
 
@@ -46,7 +46,7 @@ No existing solution provides:
 - A canonical, cross-distribution CLI with minimal cognitive load
 - A unified developer publishing workflow across ecosystems
 
-ULPM is positioned as an **orchestration and decision layer**, not a replacement for existing systems.
+Resolve is positioned as an **orchestration and decision layer**, not a replacement for existing systems.
 
 ---
 
@@ -60,13 +60,13 @@ Prior to formal Phase 0 research, a data collection script was run against Hacke
 - *"Why isn't there a truly unified package manager for Linux?"* — asked on unix.stackexchange.com in **2011**, score 37, still has no accepted answer. The problem predates most current tooling.
 
 **Cross-distro command confusion is the #1 search pattern:**
-- *"What is yum equivalent of apt-get update?"* (score 158), *"What is the real difference between apt-get and aptitude?"* (score 281) — users don't understand why they need to learn different commands per distro. This is the core UX gap ULPM targets.
+- *"What is yum equivalent of apt-get update?"* (score 158), *"What is the real difference between apt-get and aptitude?"* (score 281) — users don't understand why they need to learn different commands per distro. This is the core UX gap Resolve targets.
 
 **Beginner Linux UX is an active, high-engagement topic:**
 - *"Ask HN: How would you set up a child's first Linux computer?"* (score 227) and *"Ask HN: Ubuntu Desktop Default Apps"* (score 188) show that opinionated defaults and beginner UX are recurring high-traffic discussions.
 
 **The Snap vs Flatpak war is ongoing user pain:**
-- Multiple high-engagement posts: *"Former Canonical Dev Replaces Snaps with Flatpaks"* (score 39), *"Canonical bans Flatpak support"*, *"Swap Snaps for Flatpaks with Unsnap"*. Users are actively caught between ecosystems. ULPM's neutral orchestration layer addresses this directly.
+- Multiple high-engagement posts: *"Former Canonical Dev Replaces Snaps with Flatpaks"* (score 39), *"Canonical bans Flatpak support"*, *"Swap Snaps for Flatpaks with Unsnap"*. Users are actively caught between ecosystems. Resolve's neutral orchestration layer addresses this directly.
 
 **Even Linus Torvalds validates the problem:**
 - *"Linus Torvalds Says Linux Binary Packages Are Terrible"* appears twice with engagement — the kernel author publicly agrees that Linux packaging is broken.
@@ -76,17 +76,17 @@ Prior to formal Phase 0 research, a data collection script was run against Hacke
 
 ### What the data does NOT validate
 - No high-signal posts about wanting a unified *publishing* workflow (Phase 4). That phase should be treated as lower-validated until developer interviews confirm it.
-- Stack Exchange high-score questions are mostly `apt` power-user questions (repository management, GPG keys, rollback). These are not ULPM's target user — they already know what they're doing.
+- Stack Exchange high-score questions are mostly `apt` power-user questions (repository management, GPG keys, rollback). These are not Resolve's target user — they already know what they're doing.
 
 ### Findings from full HN thread read
 
-The full thread was read (300 comments, score 227). Key ULPM-relevant findings:
+The full thread was read (300 comments, score 227). Key Resolve-relevant findings:
 
 - **Format confusion confirmed in the wild**: A top-voted comment explicitly flags "the full app store might be too much for younger children (mummy what's a flatpak?)" — direct confirmation that package format abstraction is the right goal, not speculative.
 - **Per-application fragmentation is worse than aggregate data suggested**: Roblox requires a third-party wrapper (Sober); games go via Steam/Proton or Wine; desktop apps go via apt, Flatpak, or manual install. Heterogeneity is per-app, not just per-distro — multiple installs methods exist for a single app name.
 - **Highest-value install targets are creative tools, not productivity**: Web apps (Google Docs, Office Online) are already the de-facto workaround for LibreOffice friction. Native packaging matters most for tools with no web equivalent: Krita, Inkscape, Blender, Kdenlive, Audacity. These should be in the Phase 1 top-50 target list.
-- **Immutable distros are the recommended default for non-technical users**: Fedora Kinoite, Bazzite, Aurora, and Bluefin each recommended multiple times as sensible choices for users who should not be able to break their system. ULPM's Flatpak-first Phase 1 approach aligns well — but apt-layer install commands do not work on immutable distros without additional handling. Phase 3 (Fedora support) must explicitly address immutable distro variants.
-- **Parental controls gap is real, unsolved, and adjacent**: Multiple parents asked how to implement screen time limits and content filtering on Linux. The best current answer is a stitched-together workaround: Pi-hole DNS + uBlock Origin custom filter rules + TimeKeeper Next. No integrated solution exists. ULPM should not make this worse — avoid adding install sources that would bypass parental DNS filtering without user awareness.
+- **Immutable distros are the recommended default for non-technical users**: Fedora Kinoite, Bazzite, Aurora, and Bluefin each recommended multiple times as sensible choices for users who should not be able to break their system. Resolve's Flatpak-first Phase 1 approach aligns well — but apt-layer install commands do not work on immutable distros without additional handling. Phase 3 (Fedora support) must explicitly address immutable distro variants.
+- **Parental controls gap is real, unsolved, and adjacent**: Multiple parents asked how to implement screen time limits and content filtering on Linux. The best current answer is a stitched-together workaround: Pi-hole DNS + uBlock Origin custom filter rules + TimeKeeper Next. No integrated solution exists. Resolve should not make this worse — avoid adding install sources that would bypass parental DNS filtering without user awareness.
 
 ### Action for Phase 0
 - HN thread *"Ask HN: How would you set up a child's first Linux computer?"* — **Done. See findings above.**
@@ -134,7 +134,7 @@ Users should not need to understand package formats or distribution differences.
 
 ## 5. System Overview
 
-ULPM acts as a meta-layer that orchestrates existing package managers and repositories.
+Resolve acts as a meta-layer that orchestrates existing package managers and repositories.
 
 ### Components
 1. CLI Interface
@@ -180,7 +180,7 @@ Weighted scoring system to choose optimal package source.
 - Get real user reaction to the prototype to validate or invalidate the developer publishing use case (Phase 4)
 
 ### Deliverables
-- Working prototype: `ulpm install <app>` resolves between Flatpak and apt on Ubuntu, shows selection rationale to the user
+- Working prototype: `resolve install <app>` resolves between Flatpak and apt on Ubuntu, shows selection rationale to the user
 - Prototype published publicly (GitHub + posted to HN as Show HN, r/linux, r/linuxquestions)
 - Decision on language (Rust vs. Go) based on prototype build experience and performance benchmarks
 - Draft resolution algorithm with initial weights (feeds Phase 2), refined based on prototype install decisions
@@ -204,9 +204,9 @@ Phase 1 must not begin until **at least 3 of the following 4 conditions** are co
 
 2. **Scoring weights are empirically defensible, not guessable** — Run the prototype against the top 50 Ubuntu apps and manually verify whether its selections match what an experienced Linux user would pick. If ≥ 70% match before any tuning, the algorithm has a data-driven head start. More importantly: does the prototype collect enough install report data from Phase 0 public release to seed CompatDB before Phase 2 ships? The CompatDB dataset — not the algorithm — is the long-term moat. A competitor can copy the weights; they cannot copy two years of crowdsourced install reports.
 
-3. **Developer publishing demand surfaces organically** — If developers ask "can I publish through this?" or "will my app show up in ulpm search?" in prototype reactions without being prompted, Phase 4 is validated. Phase 4 (`ulpm publish`) is the only structural network-effect moat: if developers publish through ULPM, their users need ULPM to receive updates. No organic developer interest = Phase 4 should be deprioritised and the moat is pure convenience.
+3. **Developer publishing demand surfaces organically** — If developers ask "can I publish through this?" or "will my app show up in resolve search?" in prototype reactions without being prompted, Phase 4 is validated. Phase 4 (`resolve publish`) is the only structural network-effect moat: if developers publish through Resolve, their users need Resolve to receive updates. No organic developer interest = Phase 4 should be deprioritised and the moat is pure convenience.
 
-4. **Immutable distros do not close the gap before Phase 1 ships** — Bazzite, Kinoite, and Aurora are pushing Flatpak-by-default at the OS level, which partially implements ULPM's Phase 1 value proposition. Check: what percentage of prototype users report being on an immutable distro? If > 25%, Phase 1 scope must be reconsidered — the moat shifts entirely to cross-distro CLI unification and Phase 4 developer tooling.
+4. **Immutable distros do not close the gap before Phase 1 ships** — Bazzite, Kinoite, and Aurora are pushing Flatpak-by-default at the OS level, which partially implements Resolve's Phase 1 value proposition. Check: what percentage of prototype users report being on an immutable distro? If > 25%, Phase 1 scope must be reconsidered — the moat shifts entirely to cross-distro CLI unification and Phase 4 developer tooling.
 
 ---
 
@@ -214,48 +214,63 @@ Phase 1 must not begin until **at least 3 of the following 4 conditions** are co
 **Timeline: June – August 2026 (10 weeks)**
 
 ### Positioning
-A lightweight CLI that provides a unified install experience with basic intelligent resolution. Targets Ubuntu 22.04+ and Debian-based systems exclusively in this phase — distros where apt + Flatpak coexist and users already accept source mixing.
+A lightweight CLI that provides a unified install experience with basic intelligent resolution. Targets Ubuntu 22.04+ and Debian-based systems exclusively in this phase. Resolution is **distro-aware**: Ubuntu and its derivatives follow Canonical's packaging philosophy (Snap-first for GUI apps); other distros use Flatpak as the universal layer.
+
+### Distro-Aware Resolution Hierarchy
+
+Resolution source priority is determined by the distro detected from `/etc/os-release`:
+
+| Distro family | GUI apps | CLI tools |
+|---|---|---|
+| Ubuntu / derivatives (Mint, Pop!_OS, etc.) | Snap → apt → Flatpak (last resort) | apt → Snap |
+| Fedora / others | Flatpak → native (dnf/pacman) | native → Flatpak |
+
+**Rationale:**
+- Ubuntu ships with Snap pre-installed and Canonical maintains it as the primary universal format. Installing Flatpak by default on Ubuntu works against the distro's philosophy and adds unnecessary tooling.
+- On non-Ubuntu distros, Snap has poor support and Flatpak/Flathub is the community standard.
+- Flatpak is bootstrapped on-demand (installed automatically by Resolve) **only on non-Ubuntu distros** and **only when the resolution decision lands on Flatpak**.
 
 ### Scope
 - CLI tool only
 - Support:
-  - Flatpak via Flathub (primary)
-  - Native packages via apt (secondary)
+  - Snap (Ubuntu/derivatives — already installed, no bootstrap needed)
+  - Native packages via apt (all Debian-based)
+  - Flatpak via Flathub (non-Ubuntu distros; auto-bootstrapped on first use)
 - Explicitly leverage existing tools (no reimplementation)
-- User-configurable source preferences via `--prefer` flag or `~/.config/ulpm/config.toml`
+- User-configurable source preferences via `--prefer` flag or `~/.config/resolve/config.toml`
 
 ### Core Features
-- Unified search command across sources
-- Install command abstraction with visible source selection (`Installing Firefox from Flatpak (Flathub) — reason: newer version, sandboxed`)
-- Basic ranking logic:
-  - Prefer Flatpak for GUI desktop apps
-  - Prefer native (apt) for CLI tools and system utilities
-  - Fallback to whichever source is available
+- Unified search command across all available sources (apt, Snap, Flatpak)
+- Install command abstraction with visible source selection (`Installing Firefox from Snap — reason: Ubuntu detected, Snap is the native universal format`)
+- Distro-aware ranking logic (see hierarchy above)
+- **Flatpak bootstrap**: on non-Ubuntu distros, if resolution picks Flatpak and it is not installed, Resolve installs `flatpak` via the native package manager and adds the Flathub remote transparently. A one-time warning is shown that a session restart may be needed for GUI apps to launch correctly from the desktop.
+- **Snap awareness on Ubuntu**: detect if an app is already installed as a Snap before attempting any install; surface Snap results in `resolve search` output even if not routing installs through Snap
 - Unified update command
 - **Baseline security**: verify Flatpak signatures via Flathub GPG; verify apt packages via existing apt keyring — no installs from unsigned sources
 - Privilege escalation: use `pkexec` for apt operations (polkit, no raw sudo prompts); Flatpak remains user-space
-- **Background update check daemon**: runs on a configurable schedule (default: daily); notifies the user of available updates via a desktop notification or a terminal message on next login. Configurable via `update_check_frequency` in `~/.config/ulpm/config.toml` — accepted values: `hourly`, `daily`, `weekly`, `manual`
-- **`ulpm rollback <app>`**: reverts the last Flatpak update for the named app. Before every `ulpm update` or `ulpm update-all`, ULPM stores the current commit hash for each Flatpak app; rollback calls `flatpak update --commit=<stored_hash>`. **Flatpak-only in this phase** — apt rollback is out of scope (see Non-Goals)
+- **Background update check daemon**: runs on a configurable schedule (default: daily); notifies the user of available updates via a desktop notification or a terminal message on next login. Configurable via `update_check_frequency` in `~/.config/resolve/config.toml` — accepted values: `hourly`, `daily`, `weekly`, `manual`
+- **`resolve rollback <app>`**: reverts the last Flatpak update for the named app. Before every `resolve update` or `resolve update-all`, Resolve stores the current commit hash for each Flatpak app; rollback calls `flatpak update --commit=<stored_hash>`. **Flatpak-only in this phase** — apt rollback is out of scope (see Non-Goals)
 
 ### Example Commands
 ```
-ulpm install firefox
-ulpm search spotify
-ulpm update-all
-ulpm install git --prefer native
-ulpm install vlc --prefer flatpak
-ulpm rollback firefox
+resolve install firefox
+resolve search spotify
+resolve update-all
+resolve install git --prefer native
+resolve install vlc --prefer flatpak
+resolve rollback firefox
 ```
 
 ### Non-Goals (Critical)
 - Do NOT replace PackageKit
-- Do NOT support dnf, pacman, or Snap in this phase
+- Do NOT support dnf or pacman in this phase
+- Do NOT use Snap as an install source on non-Ubuntu distros
 - Do NOT build a GUI
 - Do NOT implement the full scoring engine (Phase 2)
 - Do NOT implement apt rollback (Phase 2)
 
 ### Success Criteria
-- Top 50 most-installed Ubuntu apps install successfully via `ulpm install <name>` with no additional user steps
+- Top 50 most-installed Ubuntu apps install successfully via `resolve install <name>` with no additional user steps
 - Install success rate ≥ 95% on Ubuntu 22.04 and 24.04
 - Benchmark: install time no more than 10% slower than calling apt/flatpak directly
 - At least 5 external users (outside the team) use it and report a better experience than the native CLI
@@ -268,11 +283,11 @@ ulpm rollback firefox
 ### Focus
 This phase introduces the primary differentiation: a configurable and transparent ranking system backed by a crowdsourced compatibility database. The scoring algorithm alone is copyable by any competitor — the database is the moat.
 
-### ULPM CompatDB
-Modelled on ProtonDB for Linux gaming, ULPM CompatDB is a community-reported compatibility layer that provides real-world install signal for the scoring engine.
+### Resolve CompatDB
+Modelled on ProtonDB for Linux gaming, Resolve CompatDB is a community-reported compatibility layer that provides real-world install signal for the scoring engine.
 
 **How it works:**
-- After each install, ULPM optionally (opt-in) submits a report: app name, source used, distro + version, install result (success / partial / failed), and app version
+- After each install, Resolve optionally (opt-in) submits a report: app name, source used, distro + version, install result (success / partial / failed), and app version
 - Reports are aggregated per `(app, distro, source)` triple into a compatibility tier: **Works** / **Works with caveats** / **Broken** / **Unknown**
 - The aggregated tiers feed directly into two scoring factors: **distro compatibility** (30%) and **update reliability** (15%)
 - Over time, manual weight curation is replaced by empirical data — the database becomes self-improving
@@ -329,15 +344,15 @@ Tie-breaking: prefer the source with higher CompatDB report volume (more data = 
 
 ### Features
 - Full multi-source scoring system using above weights
-- User-configurable weight overrides in `~/.config/ulpm/config.toml`
-- Explanation layer: `ulpm why firefox` shows score breakdown per source
+- User-configurable weight overrides in `~/.config/resolve/config.toml`
+- Explanation layer: `resolve why firefox` shows score breakdown per source
 - `--dry-run` flag: show what would be installed and why, without installing
 - Conflict detection: warn if the same app is already installed from a different source
-- **`ulpm rollback <app>` extended to apt**: caches the last 2 `.deb` versions per package locally before each update. Rollback calls `dpkg -i <cached.deb>`. Storage policy: configurable cache size limit (default: 500 MB total, retain at most 2 versions per package); oldest versions are pruned when the cap is hit. Cache path: `~/.cache/ulpm/apt/`
+- **`resolve rollback <app>` extended to apt**: caches the last 2 `.deb` versions per package locally before each update. Rollback calls `dpkg -i <cached.deb>`. Storage policy: configurable cache size limit (default: 500 MB total, retain at most 2 versions per package); oldest versions are pruned when the cap is hit. Cache path: `~/.cache/resolve/apt/`
 
 ### Success Criteria
-- In a blind test with 20 packages, ULPM's auto-selection matches or beats the choice an experienced user would make manually in ≥ 85% of cases
-- `ulpm why <app>` output is understood by a new Linux user without explanation
+- In a blind test with 20 packages, Resolve's auto-selection matches or beats the choice an experienced user would make manually in ≥ 85% of cases
+- `resolve why <app>` output is understood by a new Linux user without explanation
 - Zero cases where the selected source produces a broken install on the target distro
 
 ---
@@ -349,7 +364,7 @@ Tie-breaking: prefer the source with higher CompatDB report volume (more data = 
 - Add support for additional package managers:
   - dnf (Fedora 40+)
   - pacman (Arch, Manjaro)
-- Note: Arch users skew toward power users who may resist ULPM on principle. Prioritise Fedora. Pacman support is lower priority and can slip to Phase 3.5 if needed.
+- Note: Arch users skew toward power users who may resist Resolve on principle. Prioritise Fedora. Pacman support is lower priority and can slip to Phase 3.5 if needed.
 
 ### Features
 - Cross-distribution compatibility via distro detection (`/etc/os-release`)
@@ -371,15 +386,15 @@ Tie-breaking: prefer the source with higher CompatDB report volume (more data = 
 Reduce friction for developers distributing applications across ecosystems. This phase targets the Secondary user (developers) and is the primary driver of supply-side growth.
 
 ### Features
-- `ulpm publish` CLI: single command produces Flatpak manifest + AppImage
+- `resolve publish` CLI: single command produces Flatpak manifest + AppImage
 - Automated metadata generation (app name, icon, description, categories)
 - Integration hooks for Flathub submission workflow
 - CI/CD integration (GitHub Actions template)
 - Developer documentation and onboarding guide
 
 ### Success Criteria
-- A developer with no prior Flatpak experience can publish a working Flatpak to Flathub in under 2 hours using `ulpm publish`
-- At least 10 real open-source projects adopt `ulpm publish` within 3 months of release
+- A developer with no prior Flatpak experience can publish a working Flatpak to Flathub in under 2 hours using `resolve publish`
+- At least 10 real open-source projects adopt `resolve publish` within 3 months of release
 
 ---
 
@@ -393,7 +408,7 @@ Baseline signature validation (GPG/Flatpak) is already enforced from Phase 1. Th
 - Publisher identity verification (link to GitHub/GitLab, verified badge)
 - Cross-source reputation scoring: flag packages with poor update history or unverified publishers
 - User-visible trust indicators in all install output
-- Audit log: `ulpm history` shows what was installed, from where, and its trust status at install time
+- Audit log: `resolve history` shows what was installed, from where, and its trust status at install time
 
 ### Success Criteria
 - Zero installs from unsigned or unverified sources without explicit user confirmation (`--allow-unverified` flag)
@@ -481,13 +496,13 @@ Any usage-based recommendation or telemetry feature must be:
 - Integration with system installers (OEMs)
 - Enterprise management features (centrally managed allowed-sources policy)
 - Cross-device configuration synchronisation (sync preferences, not packages)
-- **Parental controls layer**: Screen time limits and content filtering on Linux have no integrated solution; current best practice requires Pi-hole DNS + uBlock Origin custom rules + TimeKeeper Next running separately. An integrated parental controls system for Linux is an unsolved problem with confirmed demand (validated by the HN thread). Out of ULPM's scope but a natural companion tool in the same "experience layer" philosophy.
+- **Parental controls layer**: Screen time limits and content filtering on Linux have no integrated solution; current best practice requires Pi-hole DNS + uBlock Origin custom rules + TimeKeeper Next running separately. An integrated parental controls system for Linux is an unsolved problem with confirmed demand (validated by the HN thread). Out of Resolve's scope but a natural companion tool in the same "experience layer" philosophy.
 
 ---
 
 ## 10. Conclusion
 
-ULPM addresses a genuine and unsolved gap: no existing tool provides a cross-distro CLI with intelligent, transparent source selection and a unified developer publishing workflow. The technical infrastructure (PackageKit, Flatpak, apt, dnf) already exists — the missing piece is the experience layer on top of it.
+Resolve addresses a genuine and unsolved gap: no existing tool provides a cross-distro CLI with intelligent, transparent source selection and a unified developer publishing workflow. The technical infrastructure (PackageKit, Flatpak, apt, dnf) already exists — the missing piece is the experience layer on top of it.
 
 The project's success depends more on community adoption and trust than on technical novelty. Transparency (always show what you picked and why), configurability (power users can enforce their preferences), and a tight initial scope (Ubuntu + Flatpak first) are the keys to gaining early traction without alienating the Linux community.
 

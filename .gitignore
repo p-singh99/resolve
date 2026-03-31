@@ -1,0 +1,12 @@
+# Binaries
+resolve
+
+# Go build cache
+*.test
+*.out
+
+# Config (local overrides)
+.env
+
+# OS
+.DS_Store
