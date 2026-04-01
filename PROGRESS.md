@@ -19,9 +19,11 @@
 - [x] Project structure scaffolded (`cmd/`, `internal/adapter/`, `internal/resolver/`, `internal/distro/`)
 
 #### CLI
-- [x] `resolve install <app> [--prefer flatpak|snap|native]`
+- [x] `resolve install <app> [--prefer flatpak|snap|native] [--dry-run]`
+- [x] `resolve dry-run <app>` — subcommand alias for `install --dry-run`
 - [x] `resolve search <app>` — shows results across all available sources with version info
 - [x] Config file support (`~/.config/resolve/config.toml`, `preferred_source` key)
+- [x] Shared `resolvePreference()` + `printDecision()` helper (`cmd/resolve_helper.go`) — eliminates duplication between `install` and `dry-run`
 
 #### Adapters
 - [x] **apt adapter** — search (`apt-cache`), version (`apt-cache policy`), install (`pkexec apt-get`)
